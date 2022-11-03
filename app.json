@@ -2,7 +2,8 @@
   "expo": {
     "name": "nlw-copa-mobile",
     "slug": "nlw-copa-mobile",
-    "version": "1.0.0",
+    "scheme": "nlw-copa-mobile",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

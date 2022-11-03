@@ -1,0 +1,74 @@
+import { createContext, FC, ReactNode, useState, useEffect } from "react";
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
+
+export type User = {
+  name: string;
+  avatarUrl: string;
+};
+
+export type AuthContextType = {
+  user: User;
+  isLoadingUser: boolean;
+  signIn: () => Promise<void>;
+};
+
+export type AuthContextProviderType = {
+  children?: ReactNode;
+};
+
+export const AuthContext = createContext({} as AuthContextType);
+
+export const AuthContextProvider: FC<AuthContextProviderType> = ({
+  children,
+}) => {
+  const [user, setUser] = useState({} as User);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      "3908377347-b1f5eq13u2ka4h6ihoif09d3ihv3f88h.apps.googleusercontent.com",
+    clientSecret: "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",
+    redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
+    scopes: ["profile", "email"],
+  });
+
+  const signIn = async () => {
+    try {
+      setIsLoadingUser(true);
+      await promptAsync();
+    } catch (error: any) {
+      console.warn(error?.message);
+      throw error;
+    } finally {
+      setIsLoadingUser(false);
+    }
+  };
+
+  const signInWithGoogle = async (accessToken: string) => {
+    console.log(accessToken);
+  };
+
+  useEffect(() => {
+    if (response?.type === "success" && response.authentication?.accessToken) {
+      signInWithGoogle(response.authentication?.accessToken);
+    }
+  }, [response]);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoadingUser,
+        signIn,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const AuthContextConsumer = AuthContext.Consumer;
