@@ -9,7 +9,7 @@ import { Button } from "../../components/Button";
 import Logo from "../../assets/logo.svg";
 
 export const SignIn: FC = () => {
-  const { signIn, user } = useAuth();
+  const { signIn, isLoadingUser } = useAuth();
 
   return (
     <Center flex={1} bgColor="gray.900" p={7}>
@@ -21,6 +21,7 @@ export const SignIn: FC = () => {
         type="SECONDARY"
         mt={12}
         onPress={signIn}
+        isLoading={isLoadingUser}
       />
 
       <Text color="white" textAlign="center" mt={4}>

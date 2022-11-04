@@ -3,6 +3,10 @@ import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 
+import { api } from "../../api/axios";
+import { authenticateUser } from "../../api/authenticateUser";
+import { getMe } from "../../api/getMe";
+
 WebBrowser.maybeCompleteAuthSession();
 
 export type User = {
@@ -48,8 +52,30 @@ export const AuthContextProvider: FC<AuthContextProviderType> = ({
     }
   };
 
-  const signInWithGoogle = async (accessToken: string) => {
-    console.log(accessToken);
+  const signInWithGoogle = async (access_token: string) => {
+    try {
+      setIsLoadingUser(true);
+
+      const {
+        data: { token },
+      } = await authenticateUser({ access_token });
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      const {
+        data: { user },
+      } = await getMe();
+
+      setUser({
+        avatarUrl: user.avatarUrl,
+        name: user.name,
+      });
+    } catch (error: any) {
+      console.log(error);
+      throw error;
+    } finally {
+      setIsLoadingUser(false);
+    }
   };
 
   useEffect(() => {

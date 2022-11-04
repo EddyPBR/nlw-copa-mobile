@@ -1,12 +1,22 @@
 import { FC } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
+
+import { useAuth } from "../hooks/useAuth";
+
 import { AppRoutes } from "./app.routes";
+import { SignIn } from "../screens/SignIn";
+
+import { Box } from "native-base";
 
 export const Routes: FC = () => {
+  const { user } = useAuth();
+
   return (
-    <NavigationContainer>
-      <AppRoutes />
-    </NavigationContainer>
+    <Box flex={1} bg="gray.900">
+      <NavigationContainer>
+        {user.name ? <AppRoutes /> : <SignIn />}
+      </NavigationContainer>
+    </Box>
   );
 };
