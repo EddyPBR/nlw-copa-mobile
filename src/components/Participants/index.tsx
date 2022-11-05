@@ -1,16 +1,9 @@
 import { Avatar, Center, HStack, Text } from "native-base";
 import { FC } from "react";
-
-type Participants = {
-  id: string;
-  user: {
-    name: string;
-    avatarUrl: string;
-  };
-};
+import { PoolParticipant } from "../../api/getPools";
 
 export type ParticipantsProps = {
-  participants: Participants[];
+  participants: PoolParticipant[];
   count: number;
 };
 
@@ -32,7 +25,7 @@ export const Participants: FC<ParticipantsProps> = ({
             marginRight={-3}
             borderColor="gray.800"
           >
-            {participant.user?.name?.at(0).toUpperCase()}
+            {/* {participant.user.name.at(0).toUpperCase()} */}
           </Avatar>
         ))}
 

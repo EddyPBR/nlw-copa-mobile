@@ -1,14 +1,52 @@
-import { FC } from "react";
+import { FC, useState, useCallback } from "react";
 
-import { VStack, Icon } from "native-base";
+import { VStack, Icon, useToast, FlatList } from "native-base";
 import { Octicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import { Header } from "../../components/Header";
 import { Button } from "../../components/Button";
+import { PoolCard } from "../../components/PoolCard";
+import { Loading } from "../../components/Loading";
+
+import { getPools, PoolType } from "../../api/getPools";
+import { EmptyPoolList } from "../../components/EmptyPoolList";
 
 export const Pools: FC = () => {
+  const toast = useToast();
+
+  const [pools, setPools] = useState<PoolType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const { navigate } = useNavigation();
+
+  const fetchPools = async () => {
+    try {
+      setIsLoading(true);
+
+      const {
+        data: { pools },
+      } = await getPools();
+
+      setPools(pools);
+    } catch (error: any) {
+      console.log(error);
+
+      toast.show({
+        title: error?.message,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPools();
+    }, [])
+  );
 
   return (
     <VStack flex={1} bgColor="gray.900">
@@ -30,6 +68,20 @@ export const Pools: FC = () => {
           onPress={() => navigate("find")}
         />
       </VStack>
+
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList<PoolType>
+          data={pools}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PoolCard data={item} />}
+          px={5}
+          showsVerticalScrollIndicator={false}
+          _contentContainerStyle={{ pb: 10 }}
+          ListEmptyComponent={() => <EmptyPoolList />}
+        />
+      )}
     </VStack>
   );
 };

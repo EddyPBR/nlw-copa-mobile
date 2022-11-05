@@ -1,28 +1,12 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { Heading, HStack, Text, VStack } from "native-base";
 
-import { Participants, ParticipantsProps } from "../Participants";
+import { Participants } from "../Participants";
 import { FC } from "react";
-
-type Participants = ParticipantsProps["participants"];
-
-type Pool = {
-  id: string;
-  code: string;
-  title: string;
-  ownerId: string;
-  createdAt: string;
-  owner: {
-    name: string;
-  };
-  participants: Participants;
-  _count: {
-    participants: number;
-  };
-};
+import { PoolType } from "../../api/getPools";
 
 export type PoolCardProps = TouchableOpacityProps & {
-  data: Pool;
+  data: PoolType;
 };
 
 export const PoolCard: FC<PoolCardProps> = ({ data, ...rest }) => {
