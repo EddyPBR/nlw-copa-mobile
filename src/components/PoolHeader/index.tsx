@@ -1,11 +1,11 @@
 import { Heading, HStack, Text, VStack } from "native-base";
 
-import { PoolCardProps } from "../PoolCard";
 import { Participants } from "../Participants";
 import { FC } from "react";
+import { FindPoolType } from "../../api/findPool";
 
 export type PoolHeaderProps = {
-  data: PoolCardProps["data"];
+  data: FindPoolType;
 };
 
 export const PoolHeader: FC<PoolHeaderProps> = ({ data }) => {
